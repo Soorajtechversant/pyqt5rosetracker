@@ -1,58 +1,33 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import QTime, QTimer
+from PyQt5.QtWidgets import QApplication, QTimeEdit
 
-class LoginWidget(QWidget):
-    login_successful = pyqtSignal()
+# Create a new application instance
+app = QApplication([])
 
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Login")
-        self.username_label = QLabel("Username:")
-        self.username_input = QLineEdit()
-        self.password_label = QLabel("Password:")
-        self.password_input = QLineEdit()
-        self.password_input.setEchoMode(QLineEdit.Password)
-        self.login_button = QPushButton("Login")
-        self.login_button.clicked.connect(self.check_login)
+# Create a new QTimeEdit widget
+time_edit = QTimeEdit()
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.username_label)
-        layout.addWidget(self.username_input)
-        layout.addWidget(self.password_label)
-        layout.addWidget(self.password_input)
-        layout.addWidget(self.login_button)
+# Set the time to the current time
+current_time = QTime.currentTime()
+time_edit.setTime(current_time)
 
-        self.setLayout(layout)
+# Update the time every second using a QTimer
+timer = QTimer()
+timer.timeout.connect(lambda: time_edit.setTime(QTime.currentTime()))
+timer.start(1000)
 
-    def check_login(self):
-        # Check the login credentials here
-        if self.username_input.text() == "admin" and self.password_input.text() == "admin123":
-            self.login_successful.emit()
-        else:
-            QMessageBox.warning(self, "Login Failed", "Invalid username or password")
+# Show the widget
+time_edit.show()
 
-class MainWidget(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Main Widget")
-        self.label = QLabel("Welcome!")
-        layout = QHBoxLayout()
-        layout.addWidget(self.label)
-        self.setLayout(layout)
+# Run the application
+app.exec_()
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.login_widget = LoginWidget()
-        self.main_widget = MainWidget()
-        self.setCentralWidget(self.login_widget)
-        self.login_widget.login_successful.connect(self.show_main_widget)
 
-    def show_main_widget(self):
-        self.setCentralWidget(self.main_widget)
 
-if __name__ == "__main__":
-    app = QApplication([])
-    window = MainWindow()
-    window.show()
-    app.exec_()
+
+# In this code snippet, we create a new QTimeEdit widget 
+# and set its time to the current time using QTime.currentTime() and setTime().
+# We then create a QTimer that updates the time every second by 
+# calling QTime.currentTime() and setting the time in the QTimeEdit
+# widget using setTime(). Finally, we show the widget and 
+# start the application event loop with app.exec_().
